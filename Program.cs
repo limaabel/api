@@ -1,4 +1,5 @@
 using EngineApplication.Interfaces;
+using InfrastructureApplication.Data;
 using InfrastructureApplication.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
@@ -8,7 +9,6 @@ var builder = WebApplication.CreateBuilder(args);
 // Add DbContext — set connection string in appsettings.json
 builder.Services.AddDbContext<CrmDbContext>(options =>
 	options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-
 
 builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
 
