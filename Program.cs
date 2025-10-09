@@ -1,6 +1,6 @@
-using EngineApplication.Interfaces;
-using InfrastructureApplication.Data;
+using EngineApplication.Domain.Interfaces;
 using InfrastructureApplication.Persistence;
+using InfrastructureApplication.Persistence.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 
@@ -11,6 +11,7 @@ builder.Services.AddDbContext<CrmDbContext>(options =>
 	options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
+builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
