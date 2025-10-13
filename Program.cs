@@ -1,4 +1,3 @@
-using EngineApplication.Domain.Interfaces;
 using InfrastructureApplication.Persistence;
 using InfrastructureApplication.Persistence.Context;
 using Microsoft.EntityFrameworkCore;
@@ -10,8 +9,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<CrmDbContext>(options =>
 	options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
-builder.Services.AddScoped<IOrderRepository, OrderRepository>();
+
+builder.Services.AddPersistence(builder.Configuration);
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
