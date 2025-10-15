@@ -50,6 +50,9 @@ public class CustomersController : ControllerBase
 
 		var savedCustomer = await _customerRepository.GetByIdAsync(customer.CustomerId);
 
+		if (savedCustomer == null)
+			return StatusCode(500, "A problem happened while handling your request.");
+
 		var locationUrl = Url.Action(
 			nameof(GetByIdAsync),
 			"Customers",
