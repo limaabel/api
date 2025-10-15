@@ -40,7 +40,6 @@ public class CustomersController : ControllerBase
 		return Ok(customer);
 	}
 
-	// POST: api/customers
 	[HttpPost]
 	public async Task<ActionResult> CreateAsync([FromBody] Customer customer)
 	{
@@ -48,7 +47,17 @@ public class CustomersController : ControllerBase
 			return BadRequest("Customer data is required.");
 
 		await _customerRepository.AddAsync(customer);
-		return CreatedAtAction(nameof(GetByIdAsync), new { id = customer.CustomerId }, customer);
+
+		var savedCustomer = await _customerRepository.GetByIdAsync(customer.CustomerId);
+
+		var locationUrl = Url.Action(
+			nameof(GetByIdAsync),
+			"Customers",
+			new { id = savedCustomer.CustomerId },
+			Request.Scheme
+		);
+
+		return Created(locationUrl!, savedCustomer);
 	}
 
 	// PUT: api/customers/{id}
