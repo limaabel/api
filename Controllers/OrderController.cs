@@ -48,7 +48,8 @@ public class OrdersController : ControllerBase
 			return BadRequest("Order data is required.");
 
 		await _orderRepository.AddAsync(order);
-		return CreatedAtAction(nameof(GetByIdAsync), new { id = order.OrderId }, order);
+
+		return Created(Url.Action(nameof(GetByIdAsync), "Order", new { id = order.OrderId }, Request.Scheme), order);
 	}
 
 	// PUT: api/orders/{id}

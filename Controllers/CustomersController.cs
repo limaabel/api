@@ -48,19 +48,7 @@ public class CustomersController : ControllerBase
 
 		await _customerRepository.AddAsync(customer);
 
-		var savedCustomer = await _customerRepository.GetByIdAsync(customer.CustomerId);
-
-		if (savedCustomer == null)
-			return StatusCode(500, "A problem happened while handling your request.");
-
-		var locationUrl = Url.Action(
-			nameof(GetByIdAsync),
-			"Customers",
-			new { id = savedCustomer.CustomerId },
-			Request.Scheme
-		);
-
-		return Created(locationUrl!, savedCustomer);
+		return Created(Url.Action(nameof(GetByIdAsync), "Customers", new { id = customer.CustomerId }, Request.Scheme), customer);
 	}
 
 	// PUT: api/customers/{id}
