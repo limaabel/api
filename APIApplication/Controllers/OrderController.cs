@@ -1,5 +1,4 @@
-﻿using EngineApplication.Domain.Entities;
-using EngineApplication.Domain.Interfaces;
+﻿using EngineApplication.Domain.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace APIApplication.Controllers;
@@ -15,20 +14,25 @@ public class OrdersController : ControllerBase
 		_orderRepository = orderRepository;
 	}
 
+	// ==============================
 	// GET: api/orders
+	// ==============================
 	[HttpGet]
-	public async Task<ActionResult<IEnumerable<Order>>> GetAllAsync()
+	public async Task<ActionResult<IEnumerable<OrderDetailsDto>>> GetAllAsync()
 	{
 		var orders = await _orderRepository.GetAllAsync();
-		if (orders == null)
+		if (orders == null || !orders.Any())
 			return NoContent();
 
-		return Ok(orders);
+		var result = orders.Select(OrderDetailsDto.FromEntity);
+		return Ok(result);
 	}
 
+	// ==============================
 	// GET: api/orders/{id}
+	// ==============================
 	[HttpGet("{id:int}")]
-	public async Task<ActionResult<Order>> GetByIdAsync(int id)
+	public async Task<ActionResult<OrderDetailsDto>> GetByIdAsync(int id)
 	{
 		if (id <= 0)
 			return BadRequest("Invalid order ID.");
@@ -37,37 +41,54 @@ public class OrdersController : ControllerBase
 		if (order == null)
 			return NotFound($"Order with ID {id} not found.");
 
-		return Ok(order);
+		return Ok(OrderDetailsDto.FromEntity(order));
 	}
 
+	// ==============================
 	// POST: api/orders
+	// ==============================
 	[HttpPost]
-	public async Task<ActionResult> CreateAsync([FromBody] Order order)
+	public async Task<ActionResult<OrderDetailsDto>> CreateAsync([FromBody] OrderCreateDto dto)
 	{
-		if (order == null)
+		if (dto == null)
 			return BadRequest("Order data is required.");
 
+		var order = dto.ToEntity();
 		await _orderRepository.AddAsync(order);
 
-		return Created(Url.Action(nameof(GetByIdAsync), "Order", new { id = order.OrderId }, Request.Scheme), order);
+		var result = OrderDetailsDto.FromEntity(order);
+
+		return Created(Url.Action(nameof(GetByIdAsync), "Order", new
+		{
+			id = result.OrderId
+		}, Request.Scheme), result);
 	}
 
+	// ==============================
 	// PUT: api/orders/{id}
+	// ==============================
 	[HttpPut("{id:int}")]
-	public async Task<ActionResult> UpdateAsync(int id, [FromBody] Order order)
+	public async Task<ActionResult> UpdateAsync(int id, [FromBody] OrderUpdateDto dto)
 	{
-		if (order == null || id != order.OrderId)
+		if (dto == null || id != dto.OrderId)
 			return BadRequest("Order ID mismatch.");
 
 		var existing = await _orderRepository.GetByIdAsync(id);
 		if (existing == null)
 			return NotFound($"Order with ID {id} not found.");
 
-		await _orderRepository.UpdateAsync(order);
+		existing.Status = dto.Status;
+		existing.TotalAmount = dto.TotalAmount;
+		existing.CustomerId = dto.CustomerId;
+		existing.UpdatedAt = DateTime.UtcNow;
+
+		await _orderRepository.UpdateAsync(existing);
 		return NoContent();
 	}
 
+	// ==============================
 	// DELETE: api/orders/{id}
+	// ==============================
 	[HttpDelete("{id:int}")]
 	public async Task<ActionResult> DeleteAsync(int id)
 	{
@@ -82,3 +103,4 @@ public class OrdersController : ControllerBase
 		return NoContent();
 	}
 }
+
