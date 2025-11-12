@@ -1,4 +1,5 @@
-﻿using EngineApplication.Domain.Interfaces;
+﻿using EngineApplication.Domain.DTOs.Activity;
+using EngineApplication.Domain.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace APIApplication.Controllers;
@@ -35,7 +36,7 @@ public class ActivitiesController : ControllerBase
 	// ==============================
 	// GET: api/activities/{id}
 	// ==============================
-	[HttpGet("{id:int}")]
+	[HttpGet("{id:int}", Name = "GetActivityById")]
 	public async Task<ActionResult<ActivityDetailsDto>> GetByIdAsync(int id)
 	{
 		if (id <= 0)
@@ -65,7 +66,7 @@ public class ActivitiesController : ControllerBase
 		await _activityRepository.AddAsync(activity);
 
 		var result = ActivityDetailsDto.FromEntity(activity);
-		return CreatedAtAction(nameof(GetByIdAsync), new { id = result.ActivityId }, result);
+		return CreatedAtRoute("GetActivityById", new { id = result.ActivityId }, result);
 	}
 
 	// ==============================
@@ -81,10 +82,13 @@ public class ActivitiesController : ControllerBase
 		if (existing == null)
 			return NotFound($"Activity with ID {id} not found.");
 
-		existing.Title = dto.Title;
-		existing.Description = dto.Description;
-		existing.ActivityDate = dto.ActivityDate;
-		existing.UpdatedAt = DateTime.UtcNow;
+		// Update fields that exist in the entity
+		existing.ActivityType = dto.ActivityType;
+		existing.Subject = dto.Subject;
+		existing.Notes = dto.Notes;
+		existing.PerformedBy = dto.PerformedBy;
+		existing.CustomerId = dto.CustomerId;
+		existing.CreatedAt = dto.CreatedAt;
 
 		await _activityRepository.UpdateAsync(existing);
 		return NoContent();

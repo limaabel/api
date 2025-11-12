@@ -33,7 +33,7 @@ public class ProductsController : ControllerBase
 	// ==============================
 	// GET: api/products/{id}
 	// ==============================
-	[HttpGet("{id:int}")]
+	[HttpGet("{id:int}", Name = "GetProductById")]
 	public async Task<ActionResult<ProductDetailsDto>> GetByIdAsync(int id)
 	{
 		if (id <= 0)
@@ -59,7 +59,8 @@ public class ProductsController : ControllerBase
 		await _productRepository.AddAsync(product);
 
 		var result = ProductDetailsDto.FromEntity(product);
-		return CreatedAtAction(nameof(GetByIdAsync), new { id = result.ProductId }, result);
+
+		return CreatedAtRoute("GetProductById", new { id = result.ProductId }, result);
 	}
 
 	// ==============================

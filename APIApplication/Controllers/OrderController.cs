@@ -32,7 +32,7 @@ public class OrdersController : ControllerBase
 	// ==============================
 	// GET: api/orders/{id}
 	// ==============================
-	[HttpGet("{id:int}")]
+	[HttpGet("{id:int}", Name = "GetOrderById")]
 	public async Task<ActionResult<OrderDetailsDto>> GetByIdAsync(int id)
 	{
 		if (id <= 0)
@@ -59,10 +59,7 @@ public class OrdersController : ControllerBase
 
 		var result = OrderDetailsDto.FromEntity(order);
 
-		return Created(Url.Action(nameof(GetByIdAsync), "Order", new
-		{
-			id = result.OrderId
-		}, Request.Scheme), result);
+		return CreatedAtRoute("GetOrderById", new { id = result.OrderId }, result);
 	}
 
 	// ==============================
@@ -104,4 +101,3 @@ public class OrdersController : ControllerBase
 		return NoContent();
 	}
 }
-

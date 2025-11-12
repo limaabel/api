@@ -1,16 +1,13 @@
+using EngineApplication.Domain.Interfaces;
 using InfrastructureApplication.Persistence;
-using InfrastructureApplication.Persistence.Context;
-using Microsoft.EntityFrameworkCore;
+using InfrastructureApplication.Persistence.Repositories;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add DbContext — set connection string in appsettings.json
-builder.Services.AddDbContext<CrmDbContext>(options =>
-	options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-
-
 builder.Services.AddPersistence(builder.Configuration);
+
+builder.Services.AddScoped<IActivityRepository, ActivityRepository>();
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();

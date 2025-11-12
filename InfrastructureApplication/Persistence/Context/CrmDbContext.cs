@@ -50,6 +50,7 @@ public class CrmDbContext : DbContext
 			entity.HasOne(a => a.Customer)
 				  .WithMany(c => c.Activities)
 				  .HasForeignKey(a => a.CustomerId);
+
 		});
 
 		modelBuilder.Entity<Order>(entity =>
