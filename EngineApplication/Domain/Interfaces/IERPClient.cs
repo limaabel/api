@@ -1,5 +1,10 @@
-﻿namespace EngineApplication.Domain.Interfaces;
+﻿using EngineApplication.Domain.Entities;
 
-internal class IERPClient
+namespace EngineApplication.Domain.Interfaces;
+
+public interface IERPClient
 {
+	Task<IEnumerable<Customer>> GetCustomersAsync();
+	Task<IEnumerable<Product>> GetProductsAsync();
+	Task<IEnumerable<Order>> GetOrdersAsync();
 }
