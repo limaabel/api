@@ -1,3 +1,4 @@
+using APIApplication.PipelineObjects;
 using EngineApplication.Domain.Interfaces;
 using InfrastructureApplication.Persistence;
 using InfrastructureApplication.Persistence.Repositories;
@@ -30,5 +31,6 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapControllers();
+app.UseMiddleware<ExceptionMiddleware>();
 
 app.Run();
