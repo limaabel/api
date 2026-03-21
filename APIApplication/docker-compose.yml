@@ -1,31 +1,29 @@
-version: '3.8'
+version: "3.9"
 
 services:
-  # SERVIÇO DO BANCO DE DADOS
   sql-server:
-    image: ://mcr.microsoft.com
+    image: mcr.microsoft.com/mssql/server:2022-latest
     container_name: sql_server_container
     ports:
       - "1433:1433"
     environment:
-      - ACCEPT_EULA=Y
-      - MSSQL_SA_PASSWORD=SuaSenhaForte123! # Defina sua senha aqui
+      ACCEPT_EULA: "Y"
+      MSSQL_SA_PASSWORD: "B4r1l1m4@123!"
+      MSSQL_PID: "Express" # 👈 força versão Express
     volumes:
-      - sql_data:/var/opt/mssql # Volume para não perder os dados
-
-  # SERVIÇO DA SUA API
-  api-app:
-    build:
-      context: ./APIApplication # Caminho para a pasta onde está o Dockerfile
-      dockerfile: Dockerfile
-    container_name: api_application_container
-    ports:
-      - "8080:8080"
-    depends_on:
-      - sql-server # Só sobe a API depois que o SQL estiver pronto
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-      - ConnectionStrings__DefaultConnection=Server=sql-server;Database=SeuBanco;User Id=sa;Password=SuaSenhaForte123!;TrustServerCertificate=True
+      - sql_data:/var/opt/mssql
+  # api-app:
+  #   build:
+  #     context: ./APIApplication
+  #     dockerfile: Dockerfile
+  #   container_name: api_application_container
+  #   ports:
+  #     - "8080:8080"
+  #   depends_on:
+  #     - sql-server
+  #   environment:
+  #     - ASPNETCORE_ENVIRONMENT=Development
+  #     - ConnectionStrings__DefaultConnection=Server=sql-server;Database=SeuBanco;User Id=sa;Password=SuaSenhaForte123!;TrustServerCertificate=True
 
 volumes:
-  sql_data: # Define o volume persistente
+  sql_data:
