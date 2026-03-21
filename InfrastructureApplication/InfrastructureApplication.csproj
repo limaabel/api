@@ -18,7 +18,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\EngineApplication\EngineApplication.csproj" />
+		<ProjectReference Include="..\EngineApplication\DomainApplication.csproj" />
 	</ItemGroup>
 
 </Project>
